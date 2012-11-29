@@ -1,4 +1,14 @@
 Giveity::Application.routes.draw do
+  resources :donations
+
+  resources :organizations do
+    resources :donations
+  end
+
+  resources :users do
+    resources :donations
+  end
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
