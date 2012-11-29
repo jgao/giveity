@@ -2,7 +2,9 @@ class DonationsController < ApplicationController
   # GET /donations
   # GET /donations.json
   def index
-    @donations = Donation.all
+    @donations = Donation.all unless (params[:user_id] or params[:organization_id])
+    @donations = Donation.where(:user_id => params[:user_id]) if params[:user_id]
+    @donations = Donation.where(:organization_id => params[:organization_id]) if params[:organization_id]
 
     respond_to do |format|
       format.html # index.html.erb
@@ -25,6 +27,8 @@ class DonationsController < ApplicationController
   # GET /donations/new.json
   def new
     @donation = Donation.new
+    @donation.user_id = params[:user_id] if params[:user_id]
+    @donation.organization_id = params[:organization_id] if params[:organization_id]
 
     respond_to do |format|
       format.html # new.html.erb
