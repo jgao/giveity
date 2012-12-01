@@ -1,4 +1,6 @@
 Giveity::Application.routes.draw do
+  match '/' => 'users#index'
+
   resources :donations
 
   resources :organizations do
@@ -8,6 +10,8 @@ Giveity::Application.routes.draw do
   resources :users do
     resources :donations
   end
+
+  match 'users/:id/compare' => 'users#compare'
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

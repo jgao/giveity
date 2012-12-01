@@ -1,4 +1,96 @@
 class UsersController < ApplicationController
+  # GET /users/1/compare
+  # GET /users/1/compare.json
+  def compare
+    @@comparable = ["gender", "city", "province"] # identical to model
+    @@compareBy = ["time", "money"] # identical to model
+
+    @user = User.find(params[:id])
+    @compareSameData = {}
+    @compareAllData = {}
+    @userData = {}
+
+    # compare against similar users
+    @@comparable.each do |attr|
+      users = User.where(attr.to_sym => @user.send(attr))
+
+      @compareSameData[attr] = {}
+      @@compareBy.each do |metric|
+        @compareSameData[attr][metric+"Total"] = 0
+      end
+
+      users.each do |user|
+        donations = user.donations
+ 
+        donations.each do |donation|
+          @@compareBy.each do |metric|
+            @compareSameData[attr][metric+"Total"] += donation.send(metric)
+          end
+        end
+        @@compareBy.each do |metric|
+          @compareSameData[attr][metric+"Average"] =
+              @compareSameData[attr][metric+"Total"] * 1.0 / users.length
+        end
+      end 
+    end
+
+
+
+
+
+    # compare against all users
+    donations = Donation.all
+
+    @@compareBy.each do |metric|
+      @compareAllData[metric+"Total"] = 0
+    end
+
+    donations.each do |donation|
+      @@compareBy.each do |metric|
+        @compareAllData[metric+"Total"] += donation.send(metric)
+      end
+    end
+
+    @@compareBy.each do |metric|
+      @compareAllData[metric+"Average"] =
+          @compareAllData[metric+"Total"] * 1.0 / User.all.length
+    end
+
+
+
+
+
+
+
+
+
+    # get a user's own metrics
+    donations = Donation.where(:user_id => params[:id])
+
+    @@compareBy.each do |metric|
+      @userData[metric] = 0
+    end
+
+    donations.each do |donation|
+      @@compareBy.each do |metric|
+        @userData[metric] += donation.send(metric)
+      end
+    end
+
+
+
+    @id = params[:id]
+
+    # @id, @user, @compareSameData{{}}, @compareAllData{}, @userData{}
+
+    @jsonResponse = [@id, @user, @compareSameData, @compareAllData, @userData]
+
+    respond_to do |format|
+      format.html # compare.html.erb
+      format.json { render :json => @jsonResponse } # todo
+    end
+  end
+
   # GET /users
   # GET /users.json
   def index

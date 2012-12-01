@@ -1,0 +1,65 @@
+<h1>Comparing User <%= @id %></h1>
+
+<table>
+  Current User: <br />
+  <% @user.attributes.sort.map do |index, value| %>
+    <tr>
+      <td><b><%= index %>:</b></td>
+      <td><%= value %></td>
+    </tr>
+  <% end %>
+</table>
+<br /><br />
+
+<table>
+<tr><b>
+<td><p>Here is your track record so far...</p></td>
+<td><p>Here is how you stack up against everyone on Giveity...</p></td>
+<td><p>Here is how you stack up against other people of the same...</p></td>
+</b></tr>
+<tr>
+<td valign="top">
+<table>
+  <% @userData.sort.map do |metric, metricData| %>
+    <tr>
+      <td><%= metric %></td>
+      <td><%= metricData %></td>
+    </tr>
+  <% end %>
+</table>
+</td>
+<td valign="top">
+<table>
+  <% @compareAllData.sort.map do |metric, metricData| %>
+    <tr>
+      <td><%= metric %></td>
+      <td><%= metricData %></td>
+    </tr>
+  <% end %>
+</table>
+</td>
+<td valign="top">
+<table>
+  <% @compareSameData.each do |attr, attrData| %>
+    <tr>
+      <td><b><%= attr %>:</b></td>
+      <td>
+
+        <table>
+          <% attrData.sort.map do |metric, metricData| %>
+            <tr>
+              <td><%= metric %></td>
+              <td><%= metricData %></td>
+            </tr>
+          <% end %>
+        </table>
+
+      </td>
+    </tr>
+  <% end %>
+</table>
+</td>
+</tr>
+</table>
+
+<%= link_to 'back to user dashboard', users_path %>
